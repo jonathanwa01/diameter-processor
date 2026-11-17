@@ -47,6 +47,14 @@ Run the hooks against all files with:
 uv run pre-commit run --all-files
 ```
 
+## Security note
+
+This project is a university prototype designed for a private local Ethernet
+network and is not intended to be run on a production network. It was developed
+locally for isolated lab use, and no passwords or similar security controls are
+configured for the MQTT broker or sensor connection. Do not expose this project
+on a shared, public, or production network.
+
 ## Run with Docker Compose
 
 Start the diameter processor and its local Mosquitto broker with:
