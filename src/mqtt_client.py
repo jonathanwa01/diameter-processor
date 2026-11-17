@@ -1,8 +1,9 @@
 import logging
 
-from calculator import calculate_diameter
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
+
+from calculator import calculate_diameter
 
 from .config import AppConfig
 
@@ -30,7 +31,9 @@ def run_mqtt(config: AppConfig) -> None:
             return
         result, message_id = client.subscribe(config.topics.input, qos=1)
         if result != mqtt.MQTT_ERR_SUCCESS:
-            logger.error("Could not subscribe to topic %s (code %s)", config.topics.input, result)
+            logger.error(
+                "Could not subscribe to topic %s (code %s)", config.topics.input, result
+            )
             return
         logger.info("Subscribed to %s (message id %s)", config.topics.input, message_id)
 
@@ -40,7 +43,9 @@ def run_mqtt(config: AppConfig) -> None:
         message: mqtt.MQTTMessage,
     ) -> None:
         try:
-            diameter = calculate_diameter(message.payload, config.measurement.mm_per_pixel)
+            diameter = calculate_diameter(
+                message.payload, config.measurement.mm_per_pixel
+            )
             info = client.publish(config.topics.output, diameter, qos=1)
             if info.rc != mqtt.MQTT_ERR_SUCCESS:
                 raise RuntimeError(f"MQTT publish failed with code {info.rc}.")
@@ -49,7 +54,7 @@ def run_mqtt(config: AppConfig) -> None:
 
     client.on_connect = on_connect
     client.on_message = on_message
-    
+
     logger.info(
         "Connecting to MQTT broker %s:%s",
         config.mqtt.host,

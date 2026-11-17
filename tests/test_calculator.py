@@ -61,13 +61,17 @@ class CalculateDiameterTests(unittest.TestCase):
 
     def test_rejects_incorrect_output_count(self):
         frame = bytearray(make_frame())
-        struct.pack_into("<H", frame, len(FRAME_MAGIC) + HEADER.size - 2, OUTPUT_COUNT - 1)
+        struct.pack_into(
+            "<H", frame, len(FRAME_MAGIC) + HEADER.size - 2, OUTPUT_COUNT - 1
+        )
 
         with self.assertRaisesRegex(ValueError, "must contain 3694 outputs"):
             calculate_diameter(bytes(frame), 0.01)
 
     def test_rejects_adc_codes_outside_12_bit_range(self):
-        outputs = list(OUTPUTS.unpack_from(make_frame(), len(FRAME_MAGIC) + HEADER.size))
+        outputs = list(
+            OUTPUTS.unpack_from(make_frame(), len(FRAME_MAGIC) + HEADER.size)
+        )
         outputs[PIXEL_START] = 4096
         header = HEADER.pack(1, 0, 0, 0, 0, 1, 100, OUTPUT_COUNT)
         frame = FRAME_MAGIC + header + OUTPUTS.pack(*outputs)

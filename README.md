@@ -34,6 +34,19 @@ Run the unit tests with:
 python -m unittest discover -s tests
 ```
 
+Install the development tools and enable the Ruff pre-commit hooks with:
+
+```shell
+uv sync --group dev
+uv run pre-commit install
+```
+
+Run the hooks against all files with:
+
+```shell
+uv run pre-commit run --all-files
+```
+
 ## Run with Docker Compose
 
 Start the diameter processor and its local Mosquitto broker with:

@@ -76,7 +76,9 @@ def calculate_diameter(raw_payload: bytes | bytearray, mm_per_pixel: float) -> f
         or not math.isfinite(mm_per_pixel)
         or mm_per_pixel <= 0
     ):
-        raise ValueError("'measurement.mm_per_pixel' must be a finite value greater than zero.")
+        raise ValueError(
+            "'measurement.mm_per_pixel' must be a finite value greater than zero."
+        )
 
     if len(raw_payload) != FRAME_LENGTH:
         raise ValueError(f"TCD2 frame must be {FRAME_LENGTH} bytes.")

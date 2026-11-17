@@ -1,10 +1,8 @@
 import argparse
 import logging
-from functools import partial
 from pathlib import Path
 from collections.abc import Sequence
 
-from .calculator import calculate_diameter
 from .config import load_config
 from .mqtt_client import run_mqtt
 

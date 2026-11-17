@@ -6,7 +6,6 @@ from unittest.mock import patch
 
 from config import load_config
 
-
 VALID_CONFIG = """\
 mqtt:
   host: localhost
@@ -40,20 +39,26 @@ class LoadConfigTests(unittest.TestCase):
 
     def test_rejects_invalid_port(self):
         invalid_config = VALID_CONFIG.replace("port: 1883", "port: 70000")
-        with patch.dict(os.environ, {}, clear=True):
-            with self.assertRaisesRegex(ValueError, "between 1 and 65535"):
-                self.load_yaml(invalid_config)
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            self.assertRaisesRegex(ValueError, "between 1 and 65535"),
+        ):
+            self.load_yaml(invalid_config)
 
     def test_requires_credentials_as_a_pair(self):
-        with patch.dict(os.environ, {"MQTT_USERNAME": "user"}, clear=True):
-            with self.assertRaisesRegex(ValueError, "Set both MQTT_USERNAME"):
-                self.load_yaml(VALID_CONFIG)
+        with (
+            patch.dict(os.environ, {"MQTT_USERNAME": "user"}, clear=True),
+            self.assertRaisesRegex(ValueError, "Set both MQTT_USERNAME"),
+        ):
+            self.load_yaml(VALID_CONFIG)
 
     def test_requires_positive_calibrated_scale(self):
         invalid_config = VALID_CONFIG.replace("mm_per_pixel: 0.01", "mm_per_pixel: 0")
-        with patch.dict(os.environ, {}, clear=True):
-            with self.assertRaisesRegex(ValueError, "object-plane calibration"):
-                self.load_yaml(invalid_config)
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            self.assertRaisesRegex(ValueError, "object-plane calibration"),
+        ):
+            self.load_yaml(invalid_config)
 
 
 if __name__ == "__main__":

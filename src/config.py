@@ -15,7 +15,6 @@ class MqttSettings:
     client_id: str
     username: str | None
     password: str | None
-    
 
 
 @dataclass(frozen=True)
@@ -38,7 +37,7 @@ class AppConfig:
 
 def _mapping(value: Any, name: str) -> dict[str, Any]:
     if not isinstance(value, dict):
-        raise ValueError(f"Configuration section '{name}' must be a mapping.")
+        raise TypeError(f"Configuration section '{name}' must be a mapping.")
     return value
 
 
@@ -52,7 +51,7 @@ def _required_string(section: dict[str, Any], key: str, section_name: str) -> st
 def _required_integer(section: dict[str, Any], key: str, section_name: str) -> int:
     value = section.get(key)
     if isinstance(value, bool) or not isinstance(value, int):
-        raise ValueError(f"'{section_name}.{key}' must be an integer.")
+        raise TypeError(f"'{section_name}.{key}' must be an integer.")
     return value
 
 
