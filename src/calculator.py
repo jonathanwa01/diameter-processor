@@ -108,6 +108,8 @@ def calculate_diameter(raw_payload: bytes | bytearray, mm_per_pixel: float) -> f
 
     shadow_runs: list[tuple[int, int]] = []
     run_start: int | None = None
+
+    # Find contiguous runs of pixels above the threshold (the shadow).
     for index, code in enumerate(pixels):
         if code >= threshold:
             if run_start is None:
@@ -115,6 +117,8 @@ def calculate_diameter(raw_payload: bytes | bytearray, mm_per_pixel: float) -> f
         elif run_start is not None:
             shadow_runs.append((run_start, index - 1))
             run_start = None
+            
+    # close the last run if it extends to the end of the pixel array
     if run_start is not None:
         shadow_runs.append((run_start, len(pixels) - 1))
 
