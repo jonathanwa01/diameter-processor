@@ -1,9 +1,9 @@
 mqtt:
-  host: localhost
+  host: mosquitto
   port: 1883
   keepalive_seconds: 60
   client_id: diameter-processor
 
 topics:
-  input: sensors/raw
+  input: optical-diameter/frame
   output: sensors/diameter

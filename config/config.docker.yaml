@@ -5,5 +5,5 @@ mqtt:
   client_id: diameter-processor
 
 topics:
-  input: sensors/raw
+  input: optical-diameter/frame
   output: sensors/diameter
