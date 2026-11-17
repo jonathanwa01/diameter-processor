@@ -7,3 +7,6 @@ mqtt:
 topics:
   input: optical-diameter/frame
   output: sensors/diameter
+
+measurement:
+  mm_per_pixel: 0.0 # Set to the calibrated object-plane scale before running.

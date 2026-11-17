@@ -1,6 +1,7 @@
 # diameter-processor
 
-An MQTT subscriber/publisher scaffold for processing diameter sensor readings.
+An MQTT processor for converting TCD1304 sensor frames into calibrated
+filament-diameter measurements.
 
 ## Project layout
 
@@ -13,9 +14,12 @@ An MQTT subscriber/publisher scaffold for processing diameter sensor readings.
 ## Configure and run
 
 Copy `config/config.example.yaml` to `config/config.yaml`, then set the broker
-host and input/output topics. The real config file is git-ignored. For an
-authenticated broker, provide both `MQTT_USERNAME` and `MQTT_PASSWORD` through
-the environment rather than storing credentials in YAML.
+host and input/output topics. Set `measurement.mm_per_pixel` to a calibrated
+object-plane scale in millimeters per pixel; the application rejects a missing
+or non-positive value rather than emitting an uncalibrated diameter. The real
+config file is git-ignored. For an authenticated broker, provide both
+`MQTT_USERNAME` and `MQTT_PASSWORD` through the environment rather than storing
+credentials in YAML.
 
 Install the project's dependencies in your environment, then run from the
 repository root:
@@ -38,22 +42,25 @@ Start the diameter processor and its local Mosquitto broker with:
 docker compose up --build
 ```
 
-The broker is available on `localhost:1883`. Publish an input reading from
-another terminal with a local Mosquitto client:
+The broker is available on `localhost:1883`. The sensor publishes frames to
+`optical-diameter/frame`; the processor publishes an ASCII decimal diameter in
+millimeters to `sensors/diameter`. The included broker configuration allows
+anonymous connections and is intended only for local development; use an
+appropriately secured broker in production. If the broker requires credentials,
+export `MQTT_USERNAME` and `MQTT_PASSWORD` before starting Compose.
 
-```shell
-mosquitto_pub -h localhost -t sensors/raw -m 'example reading'
-```
+## Frame decoding and measurement
 
-The processor publishes the calculated value to `sensors/diameter`. The
-included broker configuration allows anonymous connections and is intended
-only for local development; use an appropriately secured broker in production.
-If the broker requires credentials, export `MQTT_USERNAME` and `MQTT_PASSWORD`
-before starting Compose.
+The processor validates the producer's 7422-byte `TCD2` frame, reads the
+little-endian output count and ADC samples, and uses active pixels S1–S3648
+(outputs 32–3679). It estimates the bright-background and darker-shadow levels,
+sets the edge threshold halfway between them, interpolates the two threshold
+crossings, and multiplies their pixel separation by `measurement.mm_per_pixel`.
+The method assumes one contiguous darker filament shadow in the frame.
 
-## Calculation integration needed
-
-The MQTT flow passes each input message's raw bytes to
-`calculate_diameter()` and publishes the returned bytes. Until the sensor
-payload format and diameter formula are specified, the function returns the
-placeholder value `b"0.0"` for every input.
+Malformed frames, missing contrast, multiple shadows, and shadows clipped by
+the sensor edge are logged and not published. This is an initial measurement
+method; validate it against recorded sensor frames and reference diameters
+before relying on its measurements. The firmware repository supplies the
+frame protocol but does not provide a diameter algorithm or optical
+calibration.

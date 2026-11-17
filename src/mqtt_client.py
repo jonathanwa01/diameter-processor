@@ -1,15 +1,14 @@
 import logging
-from collections.abc import Callable
 
+from calculator import calculate_diameter
 import paho.mqtt.client as mqtt
 
 from .config import AppConfig
 
 logger = logging.getLogger(__name__)
-PayloadTransform = Callable[[bytes], bytes]
 
 
-def run_mqtt(config: AppConfig, transform: PayloadTransform) -> None:
+def run_mqtt(config: AppConfig) -> None:
     """Subscribe to the configured input topic and publish transformed payloads."""
     client = mqtt.Client(
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
@@ -40,10 +39,8 @@ def run_mqtt(config: AppConfig, transform: PayloadTransform) -> None:
         message: mqtt.MQTTMessage,
     ) -> None:
         try:
-            output_payload = transform(message.payload)
-            if not isinstance(output_payload, bytes):
-                raise TypeError("The payload transform must return bytes.")
-            info = client.publish(config.topics.output, output_payload, qos=1)
+            diameter = calculate_diameter(message.payload, config.measurement.mm_per_pixel)
+            info = client.publish(config.topics.output, diameter, qos=1)
             if info.rc != mqtt.MQTT_ERR_SUCCESS:
                 raise RuntimeError(f"MQTT publish failed with code {info.rc}.")
         except Exception:

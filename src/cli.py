@@ -1,5 +1,6 @@
 import argparse
 import logging
+from functools import partial
 from pathlib import Path
 from collections.abc import Sequence
 
@@ -21,7 +22,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     config = load_config(args.config)
     try:
-        run_mqtt(config, calculate_diameter)
+        run_mqtt(config)
     except ConnectionRefusedError as e:
         logging.exception("Could not connect to MQTT broker: %s", e)
         raise SystemExit(1)
