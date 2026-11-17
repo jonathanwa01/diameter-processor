@@ -20,4 +20,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     print(f"Using configuration file: {args.config}")
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     config = load_config(args.config)
-    run_mqtt(config, calculate_diameter)
+    try:
+        run_mqtt(config, calculate_diameter)
+    except ConnectionRefusedError as e:
+        logging.exception("Could not connect to MQTT broker: %s", e)
+        raise SystemExit(1)
