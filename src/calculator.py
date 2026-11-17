@@ -1,8 +1,7 @@
 def calculate_diameter(raw_payload: bytes) -> bytes:
-    """Convert a sensor payload to the output payload containing its diameter.
+    """Return a placeholder diameter until the sensor format is defined.
 
-    The sensor payload format and diameter formula are not defined yet.
+    The sensor payload format and diameter formula are not defined yet, so the
+    input is currently ignored.
     """
-    raise NotImplementedError(
-        "Implement the sensor payload parsing and diameter formula."
-    )
+    return b"0.0"

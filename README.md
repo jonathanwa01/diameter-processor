@@ -33,7 +33,6 @@ python -m unittest discover -s tests
 ## Calculation integration needed
 
 The MQTT flow passes each input message's raw bytes to
-`calculate_diameter()` and publishes the returned bytes. The sensor payload
-format and diameter formula were not specified, so that function deliberately
-raises `NotImplementedError` until those details are implemented. This avoids
-publishing a fabricated or misleading diameter.
+`calculate_diameter()` and publishes the returned bytes. Until the sensor
+payload format and diameter formula are specified, the function returns the
+placeholder value `b"0.0"` for every input.
