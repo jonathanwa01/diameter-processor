@@ -16,6 +16,8 @@ mqtt:
 topics:
   input: sensors/raw
   output: sensors/diameter
+measurement:
+  mm_per_pixel: 0.01
 """
 
 
@@ -34,6 +36,7 @@ class LoadConfigTests(unittest.TestCase):
         self.assertEqual(config.mqtt.port, 1883)
         self.assertEqual(config.topics.input, "sensors/raw")
         self.assertEqual(config.topics.output, "sensors/diameter")
+        self.assertEqual(config.measurement.mm_per_pixel, 0.01)
 
     def test_rejects_invalid_port(self):
         invalid_config = VALID_CONFIG.replace("port: 1883", "port: 70000")
@@ -45,6 +48,12 @@ class LoadConfigTests(unittest.TestCase):
         with patch.dict(os.environ, {"MQTT_USERNAME": "user"}, clear=True):
             with self.assertRaisesRegex(ValueError, "Set both MQTT_USERNAME"):
                 self.load_yaml(VALID_CONFIG)
+
+    def test_requires_positive_calibrated_scale(self):
+        invalid_config = VALID_CONFIG.replace("mm_per_pixel: 0.01", "mm_per_pixel: 0")
+        with patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(ValueError, "object-plane calibration"):
+                self.load_yaml(invalid_config)
 
 
 if __name__ == "__main__":
