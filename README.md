@@ -5,9 +5,9 @@ An MQTT subscriber/publisher scaffold for processing diameter sensor readings.
 ## Project layout
 
 - `config/config.example.yaml` documents broker and topic settings.
-- `src/diameter_processor/config.py` loads and validates the YAML configuration.
-- `src/diameter_processor/mqtt_client.py` subscribes to the input topic and publishes transformed payloads.
-- `src/diameter_processor/calculator.py` is the isolated sensor-to-diameter calculation.
+- `src/config.py` loads and validates the YAML configuration.
+- `src/mqtt_client.py` subscribes to the input topic and publishes transformed payloads.
+- `src/calculator.py` is the isolated sensor-to-diameter calculation.
 - `tests/` contains unit tests that do not require a live MQTT broker.
 
 ## Configure and run
