@@ -16,7 +16,7 @@ package = false
 test-dir = "tests"
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F"]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 
 [dependency-groups]
 dev = [

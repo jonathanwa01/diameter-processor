@@ -1,7 +1,12 @@
 import logging
+from typing import TYPE_CHECKING
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
+
+if TYPE_CHECKING:
+    from paho.mqtt.properties import Properties
+    from paho.mqtt.reasoncodes import ReasonCode
 
 from calculator import calculate_diameter
 
@@ -23,8 +28,8 @@ def run_mqtt(config: AppConfig) -> None:
         client: mqtt.Client,
         userdata: object,
         flags: mqtt.ConnectFlags,
-        reason_code: mqtt.ReasonCode,
-        properties: mqtt.Properties | None,
+        reason_code: ReasonCode,
+        properties: Properties | None,
     ) -> None:
         if reason_code.is_failure:
             logger.error("MQTT connection failed: %s", reason_code)

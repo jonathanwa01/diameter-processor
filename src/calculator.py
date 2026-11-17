@@ -22,8 +22,9 @@ def _median(values: list[int]) -> float:
 def _otsu_threshold(pixels: tuple[int, ...]) -> int:
     """
     Compute the Otsu threshold for a histogram of pixel values.
-    This threshold separates the pixels into two classes (bright and shadow) by maximizing
-    the between-class variance."""
+    This threshold separates bright and shadow pixels by maximizing the
+    between-class variance.
+    """
     histogram = [0] * (ADC_MAX + 1)
     for code in pixels:
         histogram[code] += 1
@@ -65,6 +66,9 @@ def _edge_position(
     code1: int,
     threshold: float,
 ) -> float:
+    """Interpolate a threshold crossing between two pixel codes."""
+    if code0 == code1:
+        raise ValueError("Cannot interpolate between two identical pixel codes.")
     return x0 + (threshold - code0) / (code1 - code0) * (x1 - x0)
 
 
@@ -117,7 +121,7 @@ def calculate_diameter(raw_payload: bytes | bytearray, mm_per_pixel: float) -> f
         elif run_start is not None:
             shadow_runs.append((run_start, index - 1))
             run_start = None
-            
+
     # close the last run if it extends to the end of the pixel array
     if run_start is not None:
         shadow_runs.append((run_start, len(pixels) - 1))
