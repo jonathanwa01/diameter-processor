@@ -14,7 +14,7 @@ wheels = [
 [[package]]
 name = "diameter-processor"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "paho-mqtt" },
     { name = "pyyaml" },

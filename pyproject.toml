@@ -9,15 +9,8 @@ dependencies = [
     "PyYAML>=6,<7",
 ]
 
-[project.scripts]
-diameter-processor = "diameter_processor.cli:main"
-
-[build-system]
-requires = ["setuptools>=69"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.uv]
+package = false
 
 [tool.unittest]
 test-dir = "tests"
