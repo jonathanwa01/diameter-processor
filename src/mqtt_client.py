@@ -3,7 +3,7 @@ from collections.abc import Callable
 
 import paho.mqtt.client as mqtt
 
-from config import AppConfig
+from .config import AppConfig
 
 logger = logging.getLogger(__name__)
 PayloadTransform = Callable[[bytes], bytes]

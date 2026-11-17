@@ -30,6 +30,27 @@ Run the unit tests with:
 python -m unittest discover -s tests
 ```
 
+## Run with Docker Compose
+
+Start the diameter processor and its local Mosquitto broker with:
+
+```shell
+docker compose up --build
+```
+
+The broker is available on `localhost:1883`. Publish an input reading from
+another terminal with a local Mosquitto client:
+
+```shell
+mosquitto_pub -h localhost -t sensors/raw -m 'example reading'
+```
+
+The processor publishes the calculated value to `sensors/diameter`. The
+included broker configuration allows anonymous connections and is intended
+only for local development; use an appropriately secured broker in production.
+If the broker requires credentials, export `MQTT_USERNAME` and `MQTT_PASSWORD`
+before starting Compose.
+
 ## Calculation integration needed
 
 The MQTT flow passes each input message's raw bytes to

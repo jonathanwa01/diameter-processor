@@ -1,0 +1,28 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "127.0.0.1", "-p", "1883", "-t", "healthcheck", "-m", "ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  diameter-processor:
+    build: .
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    environment:
+      - MQTT_USERNAME
+      - MQTT_PASSWORD
+    volumes:
+      - ./config/config.docker.yaml:/app/config/config.docker.yaml:ro
+    restart: unless-stopped
+
+volumes:
+  mosquitto_data:

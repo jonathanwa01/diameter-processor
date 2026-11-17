@@ -1,0 +1,9 @@
+mqtt:
+  host: mosquitto
+  port: 1883
+  keepalive_seconds: 60
+  client_id: diameter-processor
+
+topics:
+  input: sensors/raw
+  output: sensors/diameter
