@@ -2,6 +2,7 @@ import logging
 
 from calculator import calculate_diameter
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion
 
 from .config import AppConfig
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 def run_mqtt(config: AppConfig) -> None:
     """Subscribe to the configured input topic and publish transformed payloads."""
     client = mqtt.Client(
-        callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+        callback_api_version=CallbackAPIVersion.VERSION2,
         client_id=config.mqtt.client_id,
     )
     if config.mqtt.username is not None and config.mqtt.password is not None:
